@@ -10,9 +10,6 @@
 % Length Mass Time ElectricCurrent ThermodynamicTemperature
 % m      kg   s    A               K
 
-clear % should be deleted in the future
-clc
-
 % fundamental units
 m = JUnitNumber('m');
 kg = JUnitNumber('kg');
@@ -34,6 +31,7 @@ mile = 1760*yard;
 
 % volume
 liter = (10*cm)^3;
+uliter = 1e-6*liter;
 
 % mass
 g = 0.001*kg;
@@ -47,22 +45,46 @@ usec = 1e-6*s;
 minute = 60*s;
 hour = 60*minute;
 
-% speed
+% velocity
 kph = km/hour;
 mph = mile/hour;
 
+% acceleration
 
-% liter = 1e-3;
-% uliter = 1e-6*liter;
-% kW = 1000;
-% kWh = kW*3600;
-% kcal = 1/860*kWh; % 산업통상자원부고시 2014-218
-% km = 1000;
-% Nm = 1;
-% kph = 1/3.6;
-% rpm = 2*pi/60;
-% percent = 1/100;
-% Ah = 3600;
-% bar = 1e5;
-% N = 1;
-% kN = 1000;
+% force
+N = kg*m/s^2;
+kN = 1000*N;
+
+% energy
+J = N*m;
+kJ = 1000*J;
+kWh = kJ/s*hour;
+kcal = 1/860*kWh; % 산업통상자원부고시 2014-218
+
+% power
+W = J/s;
+kW = 1000*W;
+
+% torque
+Nm = N*m*rad;
+
+% pressure
+Pa = N/m^2;
+bar = 1e5*Pa;
+
+% angle
+deg = (pi/180)*rad;
+
+% angular velocity
+rpm = (2*pi*rad)/(60*s);
+
+% angular acceleration
+
+% battery capacity
+Ah = A*hour;
+
+% percent
+percent = JUnitNumber(1/100);
+
+disp('___ Units are loaded ___');
+
