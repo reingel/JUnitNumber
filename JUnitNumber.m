@@ -15,33 +15,31 @@ classdef JUnitNumber
         Value
         Dim % 7 orders of base units and 1 order of angularity
     end
-    methods(Static)
-        function r = ZeroDim()
-            r = int8(zeros(1,8));
-        end
+    properties (Constant)
+        ZeroDim = int8(zeros(1,8));
     end
     methods
         function obj = JUnitNumber(arg)
             if nargin == 1,
                 if isnumeric(arg),
                     obj.Value = arg;
-                    obj.Dim = obj.ZeroDim;
+                    obj.Dim = JUnitNumber.ZeroDim;
                 elseif isstr(arg),
                     obj.Value = 1;
-                    obj.Dim = obj.ZeroDim;
+                    obj.Dim = JUnitNumber.ZeroDim;
                     switch arg,
                         case 'm',
-                            obj.Dim(1) = 1;
+                            obj.Dim(1) = int8(1);
                         case 'kg',
-                            obj.Dim(2) = 1;
+                            obj.Dim(2) = int8(1);
                         case 's',
-                            obj.Dim(3) = 1;
+                            obj.Dim(3) = int8(1);
                         case 'A',
-                            obj.Dim(4) = 1;
+                            obj.Dim(4) = int8(1);
                         case 'K',
-                            obj.Dim(5) = 1;
+                            obj.Dim(5) = int8(1);
                         case 'rad',
-                            obj.Dim(8) = 1;
+                            obj.Dim(8) = int8(1);
                         otherwise,
                             error('Argument must be a valid string');
                     end
@@ -51,7 +49,7 @@ classdef JUnitNumber
             end
         end
         function st = isDimless(obj)
-            if obj.Dim == ZeroDim,
+            if obj.Dim == JUnitNumber.ZeroDim,
                 st = logical(1);
             else
                 st = logical(0);
@@ -60,15 +58,15 @@ classdef JUnitNumber
         function r = plus(o1,o2)
             is1 = isa(o1,'JUnitNumber');
             is2 = isa(o2,'JUnitNumber');
-            if o1 && o2,
+            if is1 && is2,
                 if o1.Dim == o2.Dim,
                     r = JUnitNumber([o1.Value] + [o2.Value]);
                     r.Dim = o1.Dim;
                 else
-                    error('Dimension mismatch');
+                    error('JUnitNumber::plus dimension mismatch');
                 end
             else
-                error('Dimension mismatch');
+                error('JUnitNumber::plus dimension mismatch');
             end
         end
         function r = uplus(obj)
@@ -77,15 +75,15 @@ classdef JUnitNumber
         function r = minus(o1,o2)
             is1 = isa(o1,'JUnitNumber');
             is2 = isa(o2,'JUnitNumber');
-            if o1 && o2,
+            if is1 && is2,
                 if o1.Dim == o2.Dim,
                     r = JUnitNumber([o1.Value] - [o2.Value]);
                     r.Dim = o1.Dim;
                 else
-                    error('Dimension mismatch');
+                    error('JUnitNumber::minus dimension mismatch');
                 end
             else
-                error('Dimension mismatch');
+                error('JUnitNumber::minus dimension mismatch');
             end
         end
         function r = uminus(obj)
@@ -123,15 +121,25 @@ classdef JUnitNumber
         function r = mpower(o1,o2)
             is1 = isa(o1,'JUnitNumber');
             is2 = isa(o2,'JUnitNumber');
-            if ~is2,
-                r = JUnitNumber([o1.Value] .* [o2]);
-                r.Dim = o1.Dim;
+            if ~is2, % number
+                if o2 == floor(o2),
+                    r = JUnitNumber([o1.Value] ^ [o2]);
+                    r.Dim = [o1.Dim] * [o2];
+                else
+                    error('JUnitNumber::mpower power value must be an integer');
+                end
             else
                 if is2.isDimless,
-                    r = JUnitNumber([o1.Value] .* [o2.Value]);
-                    r.Dim = o1.Dim;
+                    if o2.Value == floor(o2.Value),
+                        r = JUnitNumber([o1.Value] ^ [o2.Value]);
+                        if is1,
+                            r.Dim = [o1.Dim] * [o2.Value];
+                        else
+                            r.Dim = JUnitNumber.ZeroDim;
+                        end
+                    end
                 else
-                    error('Dimension mismatch');
+                    error('JUnitNumber::mpower dimension mismatch');
                 end
             end
         end
@@ -149,7 +157,7 @@ classdef JUnitNumber
                 r.Dim = o1.Dim - o2.Dim;
             end
             
-            if r.Dim == o1.ZeroDim,
+            if r.isDimless, % return a number, not a class
                 r = r.Value;
             end
         end

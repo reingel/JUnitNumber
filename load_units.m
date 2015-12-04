@@ -10,13 +10,15 @@
 % Length Mass Time ElectricCurrent ThermodynamicTemperature
 % m      kg   s    A               K
 
-clear
+clear % should be deleted in the future
 clc
 
-% basics
+% fundamental units
 m = JUnitNumber('m');
 kg = JUnitNumber('kg');
 s = JUnitNumber('s');
+A = JUnitNumber('A');
+K = JUnitNumber('K');
 rad = JUnitNumber('rad');
 
 % length
@@ -28,19 +30,28 @@ feet = 12*inch;
 yard = 3*feet;
 mile = 1760*yard;
 
+% area
+
+% volume
+liter = (10*cm)^3;
+
 % mass
 g = 0.001*kg;
+ton = 1000*kg;
 
 % time
 sec = s;
 msec = 0.001*s;
+ms = msec;
 usec = 1e-6*s;
+minute = 60*s;
+hour = 60*minute;
 
-disp([num2str(36*msec/s)]);
+% speed
+kph = km/hour;
+mph = mile/hour;
 
 
-% msec = 1e-3;
-% hour = 3600;
 % liter = 1e-3;
 % uliter = 1e-6*liter;
 % kW = 1000;
