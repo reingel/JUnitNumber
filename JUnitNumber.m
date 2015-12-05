@@ -6,20 +6,27 @@
 % Last Modified : 2015.11.19
 %
 
-% base units
-% Length Mass Time ElectricCurrent ThermodynamicTemperature
-% m      kg   s    A               K
+% Base Units
+% 1 : Length (m)
+% 2 : Mass (kg)
+% 3 : Time (sec)
+% 4 : Electric Current (A)
+% 5 : Thermodynamic Temperature (K)
+% 6 : Amount of Substance (mol)
+% 7 : Luminous Intensity (cd)
+% 8 : Angle (rad)
+% 9 : Data Size (bit)
 
 classdef JUnitNumber
     properties
         Value
     end
     properties (SetAccess = private)
-        Dim % 7 orders of base units and 1 order of angularity
+        Dim
     end
     properties (Constant, Hidden)
-        nBasDim = 8;
-        ZeroDim = int8(zeros(1,8));
+        nBasDim = 9;
+        ZeroDim = int8(zeros(1,9));
     end
     methods
         function obj = JUnitNumber(arg)
@@ -41,8 +48,14 @@ classdef JUnitNumber
                             obj.Dim(4) = int8(1);
                         case 'K',
                             obj.Dim(5) = int8(1);
+                        case 'mol',
+                            obj.Dim(6) = int8(1);
+                        case 'cd',
+                            obj.Dim(7) = int8(1);
                         case 'rad',
                             obj.Dim(8) = int8(1);
+                        case 'bit',
+                            obj.Dim(9) = int8(1);
                         otherwise,
                             error('Argument must be a valid string');
                     end

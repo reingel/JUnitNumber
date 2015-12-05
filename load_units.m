@@ -16,7 +16,10 @@ kg = JUnitNumber('kg');
 s = JUnitNumber('s');
 A = JUnitNumber('A');
 K = JUnitNumber('K');
+mol = JUnitNumber('mol');
+cd = JUnitNumber('cd');
 rad = JUnitNumber('rad');
+bit = JUnitNumber('bit');
 
 % length
 cm = 0.010*m;
@@ -44,6 +47,13 @@ ms = msec;
 usec = 1e-6*s;
 minute = 60*s;
 hour = 60*minute;
+day = 24*hour;
+
+% frequency
+Hz = 1/s;
+kHz = 1000*Hz;
+MHz = 1000*kHz;
+GHz = 1000*MHz;
 
 % velocity
 kph = km/hour;
@@ -80,11 +90,67 @@ rpm = (2*pi*rad)/(60*s);
 
 % angular acceleration
 
+% electric charge
+C = A*s;
+
+% voltage
+% electric potential difference
+% electromotive force
+V = J/C;
+
+% electric capacitance
+F = C/V;
+
+% electric resistance
+Ohm = V/A;
+
+% electrical conductance
+S = 1/Ohm;
+
+% magnetic flux
+Wb = V*s;
+
+% magnetic field strength
+T = Wb/m^2;
+
+% inductance
+H = Wb/A;
+
 % battery capacity
 Ah = A*hour;
+
+% temperature
+
 
 % percent
 percent = JUnitNumber(1/100);
 
+% data size
+bits = bit;
+kbit = 1000*bits;
+kb = kbit;
+Mbit = 1000*kbit;
+Mb = Mbit;
+Gbit = 1000*Mbit;
+Gb = Gbit;
+Tbit = 1000*Gbit;
+Tb = Tbit;
+byte = 8*bit;
+bytes = byte;
+B = bytes;
+kB = 1000*B;
+KB = 1024*bytes;
+MB = 1024*KB;
+GB = 1024*MB;
+TB = 1024*GB;
+
+% data speed
+bps = bit/s;
+kbps = kbit/s;
+Mbps = Mbit/s;
+Gbps = Gbit/s;
+Tbps = Tbit/s;
+
+% display message
 disp('___ Units are loaded ___');
 
