@@ -1,12 +1,14 @@
 %
-% Unit Class
+% JUnitNumber Class
 %
 % Created by Soonkyu Jeong
 % Creation Date : 2015.11.19
-% Last Modified : 2015.11.19
+% Last Modified : 2015.12.07
 %
 
+%
 % Base Units
+%
 % 1 : Length (m)
 % 2 : Mass (kg)
 % 3 : Time (sec)
@@ -16,6 +18,7 @@
 % 7 : Luminous Intensity (cd)
 % 8 : Angle (rad)
 % 9 : Data Size (bit)
+%
 
 classdef JUnitNumber
     properties
@@ -74,15 +77,18 @@ classdef JUnitNumber
         function r = plus(o1,o2)
             is1 = isa(o1,'JUnitNumber');
             is2 = isa(o2,'JUnitNumber');
-            if is1 && is2,
-                if o1.Dim == o2.Dim,
-                    r = JUnitNumber([o1.Value] + [o2.Value]);
-                    r.Dim = o1.Dim;
-                else
-                    error('JUnitNumber::plus dimension mismatch');
-                end
-            else
-                error('JUnitNumber::plus dimension mismatch');
+            
+            if ~isDimEqual(o1,o2),
+                error('Dimension mismatch');
+            end
+            
+            if ~is1 && is2,
+                r = [o1] + [o2.Value];
+            elseif is1 && ~is2,
+                r = [o1.Value] + [o2];
+            elseif is1 && is2,
+                r = JUnitNumber([o1.Value] + [o2.Value]);
+                r.Dim = o1.Dim;
             end
         end
         function r = uplus(obj)
@@ -91,15 +97,18 @@ classdef JUnitNumber
         function r = minus(o1,o2)
             is1 = isa(o1,'JUnitNumber');
             is2 = isa(o2,'JUnitNumber');
-            if is1 && is2,
-                if o1.Dim == o2.Dim,
-                    r = JUnitNumber([o1.Value] - [o2.Value]);
-                    r.Dim = o1.Dim;
-                else
-                    error('JUnitNumber::minus dimension mismatch');
-                end
-            else
-                error('JUnitNumber::minus dimension mismatch');
+            
+            if ~isDimEqual(o1,o2),
+                error('Dimension mismatch');
+            end
+            
+            if ~is1 && is2,
+                r = [o1] - [o2.Value];
+            elseif is1 && ~is2,
+                r = [o1.Value] - [o2];
+            elseif is1 && is2,
+                r = JUnitNumber([o1.Value] - [o2.Value]);
+                r.Dim = o1.Dim;
             end
         end
         function r = uminus(obj)
@@ -109,6 +118,7 @@ classdef JUnitNumber
         function r = mtimes(o1,o2)
             is1 = isa(o1,'JUnitNumber');
             is2 = isa(o2,'JUnitNumber');
+            
             if ~is1 && is2,
                 r = JUnitNumber([o1] * [o2.Value]);
                 r.Dim = o2.Dim;
@@ -123,6 +133,7 @@ classdef JUnitNumber
         function r = times(o1,o2)
             is1 = isa(o1,'JUnitNumber');
             is2 = isa(o2,'JUnitNumber');
+            
             if ~is1 && is2,
                 r = JUnitNumber([o1] .* [o2.Value]);
                 r.Dim = o2.Dim;
@@ -137,12 +148,13 @@ classdef JUnitNumber
         function r = mpower(o1,o2)
             is1 = isa(o1,'JUnitNumber');
             is2 = isa(o2,'JUnitNumber');
+            
             if ~is2, % number
                 if o2 == floor(o2),
                     r = JUnitNumber([o1.Value] ^ [o2]);
                     r.Dim = [o1.Dim] * [o2];
                 else
-                    error('JUnitNumber::mpower power value must be an integer');
+                    error('Power value must be an integer');
                 end
             else
                 if is2.isDimless,
@@ -155,19 +167,20 @@ classdef JUnitNumber
                         end
                     end
                 else
-                    error('JUnitNumber::mpower dimension mismatch');
+                    error('Dimension mismatch');
                 end
             end
         end
         function r = power(o1,o2)
             is1 = isa(o1,'JUnitNumber');
             is2 = isa(o2,'JUnitNumber');
+            
             if ~is2, % number
                 if o2 == floor(o2),
                     r = JUnitNumber([o1.Value] .^ [o2]);
                     r.Dim = [o1.Dim] * [o2];
                 else
-                    error('JUnitNumber::power power value must be an integer');
+                    error('Power value must be an integer');
                 end
             else
                 if is2.isDimless,
@@ -180,34 +193,17 @@ classdef JUnitNumber
                         end
                     end
                 else
-                    error('JUnitNumber::power dimension mismatch');
+                    error('Dimension mismatch');
                 end
             end
         end
         function r = mldivide(o1,o2)
             is1 = isa(o1,'JUnitNumber');
             is2 = isa(o2,'JUnitNumber');
-            if ~is1 && is2,
-                r = JUnitNumber([o1] \ [o2.Value]);
-                r.Dim = -o2.Dim;
-            elseif is1 && ~is2,
-                r = JUnitNumber([o1.Value] \ [o2]);
-                r.Dim = o1.Dim;
-            elseif is1 && is2,
-                r = JUnitNumber([o1.Value] \ [o2.Value]);
-                r.Dim = o1.Dim - o2.Dim;
-            end
             
-            if r.isDimless, % return a number, not a class
-                r = r.Value;
-            end
-        end
-        function r = mrdivide(o1,o2)
-            is1 = isa(o1,'JUnitNumber');
-            is2 = isa(o2,'JUnitNumber');
             if ~is1 && is2,
                 r = JUnitNumber([o1] / [o2.Value]);
-                r.Dim = -o2.Dim;
+                r.Dim = o2.Dim;
             elseif is1 && ~is2,
                 r = JUnitNumber([o1.Value] / [o2]);
                 r.Dim = o1.Dim;
@@ -220,12 +216,32 @@ classdef JUnitNumber
                 r = r.Value;
             end
         end
+        function r = mrdivide(o1,o2)
+            is1 = isa(o1,'JUnitNumber');
+            is2 = isa(o2,'JUnitNumber');
+            
+            if ~is1 && is2,
+                r = JUnitNumber([o1] ./ [o2.Value]);
+                r.Dim = o2.Dim;
+            elseif is1 && ~is2,
+                r = JUnitNumber([o1.Value] ./ [o2]);
+                r.Dim = o1.Dim;
+            elseif is1 && is2,
+                r = JUnitNumber([o1.Value] ./ [o2.Value]);
+                r.Dim = o1.Dim - o2.Dim;
+            end
+            
+            if r.isDimless, % return a number, not a class
+                r = r.Value;
+            end
+        end
         function r = ldivide(o1,o2)
             is1 = isa(o1,'JUnitNumber');
             is2 = isa(o2,'JUnitNumber');
+            
             if ~is1 && is2,
                 r = JUnitNumber([o1] .\ [o2.Value]);
-                r.Dim = -o2.Dim;
+                r.Dim = o2.Dim;
             elseif is1 && ~is2,
                 r = JUnitNumber([o1.Value] .\ [o2]);
                 r.Dim = o1.Dim;
@@ -241,14 +257,15 @@ classdef JUnitNumber
         function r = rdivide(o1,o2)
             is1 = isa(o1,'JUnitNumber');
             is2 = isa(o2,'JUnitNumber');
+            
             if ~is1 && is2,
-                r = JUnitNumber([o1] ./ [o2.Value]);
-                r.Dim = -o2.Dim;
+                r = JUnitNumber([o1] \ [o2.Value]);
+                r.Dim = o2.Dim;
             elseif is1 && ~is2,
-                r = JUnitNumber([o1.Value] ./ [o2]);
+                r = JUnitNumber([o1.Value] \ [o2]);
                 r.Dim = o1.Dim;
             elseif is1 && is2,
-                r = JUnitNumber([o1.Value] ./ [o2.Value]);
+                r = JUnitNumber([o1.Value] \ [o2.Value]);
                 r.Dim = o1.Dim - o2.Dim;
             end
             
